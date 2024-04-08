@@ -1,5 +1,7 @@
+// https://viblo.asia/p/hoc-flutter-tu-co-ban-den-nang-cao-phan-7-lot-tran-trui-globalkey-bJzKmPxk59N
+
 //Sử dụng Key để bảo tồn, để giữ lại cái State khi các Widget bị di chuyển tùm lum chỗ quanh cái Widget Tree.
-// Trường hợp swap 2 widget ở 2 vị trí xa xôi khác nhau 
+// Trường hợp swap 2 widget ở 2 vị trí xa xôi khác nhau
 
 import 'package:flutter/material.dart';
 
@@ -22,7 +24,8 @@ class MyApp extends StatelessWidget {
 }
 
 // Widget Counter nắm giữ biến counter và có 1 GlobalKey được gán vào Widget này
-// Khởi tạo 1 class CounterState
+
+// Khởi tạo 1 class CounterState : là 1 Widget common
 class Counter extends StatefulWidget {
   const Counter({Key? key}) : super(key: key);
 
@@ -33,6 +36,7 @@ class Counter extends StatefulWidget {
 class CounterState extends State<Counter> {
   int counter = 0;
 
+  // Một hàm của CounterState widget
   void incrementCounter() {
     counter++;
   }
@@ -43,8 +47,7 @@ class CounterState extends State<Counter> {
   }
 }
 
-
-// Màn hình 1
+//--------------- Màn hình 1----------
 class MyHomePage extends StatefulWidget {
   @override
   _MyHomePageState createState() {
@@ -53,29 +56,34 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final counterKey = GlobalKey<CounterState>();    //Đây là khai báo 1 global key của 1 đối tượng CounterState
-                                                  // Khai báo globalkey này chỉ khai báo 1 lần 
+  final counterKey = GlobalKey<
+      CounterState>(); // Đây là khai báo 1 global key của 1  CounterState widget  được khai báo ở trên
+  // Khai báo globalkey này chỉ khai báo 1 lần và truyền đi các nơi
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Thậm chí đưa data lên tới tận đây: ${counterKey.currentState?.counter ?? 0}'),
+          title: Text(
+              'Thậm chí đưa data lên tới tận đây: ${counterKey.currentState?.counter ?? 0}'), // counterKey.currentState?.counter có thể đọc state widget tại đây khi đã có GlobalKey
         ),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text('Miễn có GlobalKey là chỗ nào cũng có thể truy cập: ${counterKey.currentState?.counter ?? 0}'),
-              Counter(key: counterKey),    // Đây là nơi khởi tạo ra 1 widget có sử dụng cái GlobalKey 
-                                          // Khởi tạo cái widget chứa global key này cũng chỉ khởi tạo 1 lần 
-              FlatButton(   
+              Text(
+                  'Miễn có GlobalKey là chỗ nào cũng có thể truy cập: ${counterKey.currentState?.counter ?? 0}'),
+              Counter(
+                  key:
+                      counterKey), // Đây là nơi khởi tạo ra 1 widget có sử dụng cái GlobalKey
+              // Khởi tạo cái widget chứa global key này cũng chỉ khởi tạo 1 lần
+              ElevatedButton(
                 child: Text('Qua màn khác'),
-                color: Colors.pink,
+                // color: Colors.pink,
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (ctx) => SecondPage(counterKey: counterKey)
-                  ));
+                      builder: (ctx) => SecondPage(counterKey: counterKey)));
                 },
               )
             ],
@@ -85,7 +93,8 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Icon(Icons.add),
           onPressed: () {
             setState(() {
-              counterKey.currentState!.incrementCounter();   // gọi hàm của đối tượng Counter
+              counterKey.currentState!
+                  .incrementCounter(); // Có thể gọi chạy hàm của đối tượng Counter
             });
           },
         ),
@@ -94,13 +103,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-
-
-// màn hình thứ 2
+//--------------- Màn hình thứ 2 -------------------
 class SecondPage extends StatefulWidget {
   SecondPage({Key? key, required this.counterKey}) : super(key: key);
 
-  final GlobalKey<CounterState> counterKey;   // constructor nhận vào 1 cái global key 
+  final GlobalKey<CounterState>
+      counterKey; // constructor nhận vào 1 cái global key
 
   @override
   State<StatefulWidget> createState() {
@@ -118,11 +126,10 @@ class SecondPageState extends State<SecondPage> {
           children: [
             Text(
                 'Du lịch qua màn hình mới: ${widget.counterKey.currentState?.counter ?? 0}',
-                style: Theme.of(context).textTheme.headline5
-            ),
-            FlatButton(
+                style: Theme.of(context).textTheme.headline5),
+            ElevatedButton(
               child: Text('Về lại màn cũ'),
-              color: Colors.orange,
+              // color: Colors.orange,
               onPressed: () {
                 Navigator.pop(context);
               },
