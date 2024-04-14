@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 
-// KHÔNG SỬ DỤNG KEY CŨNG CÓ THỂ SWAP SWAP2 WIDGET 
+// KHÔNG SỬ DỤNG KEY CŨNG CÓ THỂ SWAP SWAP2 WIDGET : StatelessWidget
 
 void main() {
   runApp(MyApp());

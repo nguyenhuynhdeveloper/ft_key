@@ -44,14 +44,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    print("Widget _MyHomePageState rebuild ");
+
     return Scaffold(
       body: Center(
-        child: Row(
-          children:[
-            ...listTile,
-            Text('UniqueKey same level'),
-          ]
-        ),
+        child: Row(children: [
+          ...listTile,
+          Text('UniqueKey same level'),
+        ]),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: swapTwoTileWidget,

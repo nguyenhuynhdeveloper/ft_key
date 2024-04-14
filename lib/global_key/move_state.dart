@@ -56,8 +56,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final counterKey = GlobalKey<
-      CounterState>(); // Đây là khai báo 1 global key của 1  CounterState widget  được khai báo ở trên
+  final counterKey = GlobalKey<CounterState>();
+
+  // Đây là khai báo 1 global key của 1  CounterState widget  được khai báo ở trên
   // Khai báo globalkey này chỉ khai báo 1 lần và truyền đi các nơi
 
   @override

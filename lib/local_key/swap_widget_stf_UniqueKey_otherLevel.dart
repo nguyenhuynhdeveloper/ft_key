@@ -1,4 +1,3 @@
-
 // Phần 2 :   VÍ DỤ KHÔNG THỂ SWAP ĐƯỢC KHI KHÁC LEVEL VỚI NHAU  --- Nhưng chạy app lên thì vẫn swap như thường
 //Ví dụ cho local Key : Khi 2 widget mà để key không cùng level với nhau không thể swap cho nhau được
 
@@ -31,17 +30,54 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-// key được đặt ở trên Padding
+// Thằng Padding không có key, thằng Tile thì vẫn có key như này:
+// Mỗi lần click là 2 cái ô vuông đổi sang một màu khác luôn
+// Do LocalKey => Flutter chỉ tìm kiếm trên 1 level cụ thể chứ không tìm trong tất cả 4 Widget gồm 2 padding + 2 Tile
+// Nó chỉ tìm kiếm trên level Padding
+
+  // var listTile = <Widget>[
+  //   Padding(
+  //     padding: const EdgeInsets.all(8.0),
+  //     child: Tile(key: UniqueKey()),
+  //   ),
+  //   Padding(
+  //     padding: const EdgeInsets.all(8.0),
+  //     child: Tile(key: UniqueKey()),
+  //   )
+  // ];
+
+// Cách Fix 1 : Đưa Key lên level Padding
+// key được đặt ở trên Padding thì swap đúng màu
+  // var listTile = <Widget>[
+  //   Padding(
+  //     key: UniqueKey(),
+  //     padding: const EdgeInsets.all(8.0),
+  //     child: Tile(),
+  //   ),
+  //   Padding(
+  //     key: UniqueKey(),
+  //     padding: const EdgeInsets.all(8.0),
+  //     child: Tile(),
+  //   )
+  // ];
+
+  /**
+   một cái tip là LocalKey chỉ nên được đặt ở các Widget là top level, 
+   level cao nhất trong list children của một Row hoặc một Column. 
+   Một Row, nó có nhiều đứa con có cùng một level, Flutter sẽ tìm trong mấy đứa con cùng level đó.
+
+
+   */
+
+// Cách Fix 2: Sử dụng  GlobalKey để Flutter tìm kiếm rộng ra
   var listTile = <Widget>[
     Padding(
-      key: UniqueKey(),
       padding: const EdgeInsets.all(8.0),
-      child: Tile(),
+      child: Tile(key: GlobalKey()),
     ),
     Padding(
-      key: UniqueKey(),
       padding: const EdgeInsets.all(8.0),
-      child: Tile(),
+      child: Tile(key: GlobalKey()),
     )
   ];
 
@@ -50,13 +86,10 @@ class _MyHomePageState extends State<MyHomePage> {
     print("UniqueKey others level ");
     return Scaffold(
       body: Center(
-        child: Row(
-          children: [
-            Text('UniqueKey others level'),
-            ...listTile,
-
-          ]
-        ),
+        child: Row(children: [
+          Text('UniqueKey others level'),
+          ...listTile,
+        ]),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: swapTwoTileWidget,
@@ -114,26 +147,5 @@ Khi Element bị deactivate, Flutter sẽ thực hiện quá trình matching up 
 Nếu Flutter mà nói "no key matching found" (không tìm thấy key nào phù hợp) thì Element cũng sẽ bị dispose. 
 Nếu tìm thấy key phù hợp, Element đó sẽ cho biến widget của Element trỏ tới Widget mới đó và vì thế nó được gắn lại vào Element Tree.
 
-Các loại LocalKey
-Class Key nó có 2 subclass là LocalKey và GlobalKey. 
-GlobalKey mình đã giới thiệu sơ ở trên rồi, mình sẽ nói nhiều hơn về GlobalKey ở bài sau. Bài lần này, mình chỉ tập trung nói về LocalKey.
 
-Các loại LocalKey :  UniqueKey , ValueKey, ObjectKey.
-Hai loại key này nó cho phép mình truyền giá trị mà mình mong muốn vào.
-Ví dụ thế này: ValueKey('tui muốn giá trị của key này là 113'), ObjectKey('abc'). Nhưng phải cực kỳ cẩn thận với 2 loại key này. Bởi vì:
-
-Tất cả Widget được khai báo Key mà có cùng một Widget cha thì các Key đó đều phải đôi một khác nhau
-Tức là không có cái Key nào được phép trùng với Key khác trong phạm vi cùng một Widget cha.
-Nếu bạn vi phạm, Flutter sẽ ném một lỗi: Exception: Duplicate keys found.
- Cái này không cần nói cũng biết, nếu trong ví dụ trên, 2 Widget Tile có cùng 1 key thì 1 Element nó match được với 2 Widget luôn à, điều đó là vô lý. 
- Chính vì vậy, Flutter không thể để điều vô lý đó xảy ra.
- 
- Vậy ValueKey và ObjectKey có gì khác nhau. 
- Sự khác nhau ở đây là ValueKey nó so sánh giá trị, hai ValueKey có cùng giá trị (ví dụ như cùng giá trị 113 ở trên) thì được gọi là trùng nhau, 
- còn ObjectKey thì truyền vào một Object và nó sẽ so sánh địa chỉ của Object chứ không phải chỉ so sánh giá trị. 
- Nói ngắn gọn lại thì ValueKey sử dụng so sánh ==, còn ObjectKey sử dụng so sánh identical
- Well, chúng ta đã hiểu về ValueKey và ObjectKey rồi. Còn đây là định nghĩa về UniqueKey mà đã được mình sử dụng từ đầu bài:
-
-A key that is only equal to itself.
-Đúng như cái tên của nó, đã là UniqueKey thì không bao giờ có thằng thứ 2 trùng với nó trên cuộc đời này.
  */
